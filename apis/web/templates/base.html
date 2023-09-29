@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{% block title %}{% endblock %}</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='css/title.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='css/form.css') }}"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div class="container-fluid row menu_color">
+      <div class="col-3">
+        <h1 class="justify-content-start p-auto m-auto">
+          {% block title_text %}{% endblock %}
+        </h1>
+      </div>
+      <div class="col-9">
+        <ul class="nav justify-content-end">
+          <li class="nav-item" id="personnel">
+            <a class="nav-link active" aria-current="page" href="/web/personnel"
+              >人員管理</a
+            >
+          </li>
+          <li class="nav-item" id="medications">
+            <a class="nav-link" href="/web/medications">藥物管理</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/web/patient">病人管理</a>
+          </li>
+          <li class="nav-item" id="database">
+            <a class="nav-link" href="/web/database">資料庫管理</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/web/settings">設定</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/web/login">登出</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div id="permissions" data-permissions="{{ permissions }}"></div>
+
+    <div>{% block content %}{% endblock %}</div>
+
+    <div>{% block scripts %}{% endblock %}</div>
+
+    <script src="{{ url_for('static', filename='js/base.js') }}"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
