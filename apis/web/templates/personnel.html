@@ -1,11 +1,5 @@
-{% extends "base.html" %}
-{% block title %}
-  人員管理
-{% endblock %}
-{% block title_text %}
-  人員管理
-{% endblock %} 
-{% block content %}
+{% extends "base.html" %} {% block title %} 人員管理 {% endblock %} {% block
+title_text %} 人員管理 {% endblock %} {% block content %}
 
 <div id="personnel-data" data-personnel="{{ personnel_data }}"></div>
 <br />
@@ -79,6 +73,7 @@
     <span class="edit-close">&times;</span>
     <form id="editForm">
       <h2>編輯人員資料</h2>
+      <input type="hidden" id="edit_id" name="id" required /><br /><br />
       <label for="ms_id">醫護號:</label>
       <input type="text" id="edit_ms_id" name="ms_id" required /><br /><br />
 
@@ -92,6 +87,7 @@
       ><br /><br />
 
       <button type="submit">更新</button>
+    </form>
   </div>
 </div>
 

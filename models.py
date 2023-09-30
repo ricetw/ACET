@@ -3,7 +3,7 @@ import datetime
 import os
 
 from configs import SQL_Server
-from sqlalchemy import ARRAY, Column, Boolean, Integer, Float, String, DateTime
+from sqlalchemy import ARRAY, Boolean, Column, DateTime, Float, Integer, String, TEXT
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base
 
@@ -33,8 +33,8 @@ class Medication(Base):  # 藥物
     __tablename__ = "Medication"
     id = Column(Integer, nullable=False, primary_key=True)
     name = Column(String(255), nullable=False)
-    effect = Column(String(255), nullable=False)
-    side_effect = Column(String(255), nullable=False)
+    effect = Column(TEXT(10000), nullable=False)
+    side_effect = Column(TEXT(10000), nullable=False)
     drug_class = Column(Integer, nullable=False)  # 0:injection, 1:oral, 2:external, 3:other
 
 
@@ -54,9 +54,9 @@ class Medical_Records(Base):
     medical_record_number = Column(String(255), nullable=False)
     height = Column(Float, nullable=False)
     weight = Column(Float, nullable=False)
-    cases = Column(String(255), nullable=False)
-    medication = Column(String(255), nullable=False)
-    notice = Column(String(255), nullable=False)
+    cases = Column(String(2048), nullable=False)
+    medication = Column(String(2048), nullable=False)
+    notice = Column(String(2048), nullable=False)
     time = Column(DateTime(timezone=False), nullable=False)
 
 

@@ -19,9 +19,13 @@ class Login_Check():
         if session.get('ms_id') is None:
             return None
         else:
-            sql = text('select * from {medical_staff} where ms_id = :ms_id'.format(medical_staff=medical_staff))
-            row = dbsession.execute(sql, [{'ms_id': session.get('ms_id')}]).fetchall()[0]
-            return row.permissions
+            try:
+                sql = text('select * from {medical_staff} where ms_id = :ms_id'.format(medical_staff=medical_staff))
+                row = dbsession.execute(sql, [{'ms_id': session.get('ms_id')}]).fetchall()[0]
+                return row.permissions
+            except Exception as e:
+                print(e)
+                return None
 
 
 class Login(MethodView):
@@ -30,21 +34,28 @@ class Login(MethodView):
         return render_template('login.html')
     
     def post(self):
-        data = request.get_json()
-        ms_id = data.get('username')
-        pwd = data.get('password')
-        sql = text('select * from {medical_staff} where ms_id = :ms_id'.format(medical_staff=medical_staff))
-        row = dbsession.execute(sql, [{'ms_id': ms_id}]).fetchall()
-        if row and check_password_hash(row[0].pwd, pwd):
-            session['ms_id'] = row[0].ms_id
-            result = {
-                "result": 0,
-                "message": "成功"
-            }
-        else:
+        try:
+            data = request.get_json()
+            ms_id = data.get('username')
+            pwd = data.get('password')
+            sql = text('select * from {medical_staff} where ms_id = :ms_id'.format(medical_staff=medical_staff))
+            row = dbsession.execute(sql, [{'ms_id': ms_id}]).fetchall()
+            if row and check_password_hash(row[0].pwd, pwd):
+                session['ms_id'] = row[0].ms_id
+                result = {
+                    "result": 0,
+                    "message": "成功"
+                }
+            else:
+                result = {
+                    "result": 1,
+                    "message": "帳號或密碼錯誤",
+                }
+        except Exception as e:
+            print(e)
             result = {
                 "result": 1,
-                "message": "失敗",
+                "message": str(e),
             }
         return jsonify(result)
 
@@ -64,18 +75,22 @@ class Personnel(MethodView):
         if permissions == None:
             return redirect(url_for('web.login'))
         else:
-            row = dbsession.execute(
-                text('select ms_id, name, permissions from {medical_staff}'.format(medical_staff=medical_staff))
-            ).fetchall()
-            data = []
-            for i in row:
-                if i.permissions != 0:
-                    data.append({
-                        "ms_id": i.ms_id,
-                        "name": i.name,
-                        "permissions": i.permissions
-                    })
-            return render_template('personnel.html', permissions=permissions, personnel_data=json.dumps(data))
+            try:
+                row = dbsession.execute(
+                    text('select ms_id, name, permissions from {medical_staff}'.format(medical_staff=medical_staff))
+                ).fetchall()
+                data = []
+                for i in row:
+                    if i.permissions != 0:
+                        data.append({
+                            "ms_id": i.ms_id,
+                            "name": i.name,
+                            "permissions": i.permissions
+                        })
+                return render_template('personnel.html', permissions=permissions, personnel_data=json.dumps(data))
+            except Exception as e:
+                print(e)
+                return redirect(url_for('web.index'))
     
     def post(self):
         data = request.get_json()
@@ -97,7 +112,7 @@ class Personnel(MethodView):
                 print(e)
                 result = {
                     "result": 1,
-                    "message": "失敗",
+                    "message": str(e),
                 }
         elif data.get('action') == 'search':
             with Session.begin() as db:
@@ -121,16 +136,17 @@ class Personnel(MethodView):
                         "message": "成功",
                         "data": data
                     }
-                except:
+                except Exception as e:
+                    print(e)
                     result = {
                         "result": 1,
-                        "message": "失敗",
+                        "message": "失敗" + str(e),
                     }
         elif data.get('action') == 'detail':
             try:
                 row = dbsession.execute(
                     text(
-                        "select ms_id, name, permissions from {medical_staff} where ms_id = :ms_id".format(
+                        "select uid, ms_id, name, permissions from {medical_staff} where ms_id = :ms_id".format(
                             medical_staff=medical_staff
                     )),
                     [{"ms_id": data.get("ms_id")}]
@@ -139,14 +155,16 @@ class Personnel(MethodView):
                     "result": 0,
                     "message": "成功",
                     "data": {
+                        "uid": row.uid,
                         "ms_id": row.ms_id,
                         "name": row.name,
                         "permissions": row.permissions
                 }}
-            except:
+            except Exception as e:
+                print(e)
                 result = {
                     "result": 1,
-                    "message": "失敗",
+                    "message": "失敗" + str(e),
                 }
         return jsonify(result)
     
@@ -160,18 +178,19 @@ class Personnel(MethodView):
                 "result": 0,
                 "message": "成功",
             }
-        except:
+        except Exception as e:
+            print(e)
             result = {
                 "result": 1,
-                "message": "失敗",
+                "message": "失敗" + str(e),
             }
         return jsonify(result)
     
     def put(self):
         data = request.get_json()
-        print(data)
         try:
-            dbsession.query(Medical_Staff).filter(Medical_Staff.ms_id == data.get('ms_id')).update({
+            dbsession.query(Medical_Staff).filter(Medical_Staff.uid == data.get('uid')).update({
+                "ms_id": data.get('ms_id'),
                 "name": data.get('name'),
                 "permissions": data.get('permissions')
             })
@@ -180,21 +199,13 @@ class Personnel(MethodView):
                 "result": 0,
                 "message": "成功",
             }
-        except:
+        except Exception as e:
+            print(e)
             result = {
                 "result": 1,
-                "message": "失敗",
+                "message": "失敗" + str(e),
             }
         return jsonify(result)
-
-
-class Patient(MethodView):
-    def get(self):
-        permissions = Login_Check.login_required()
-        if permissions != 4:
-            return render_template('patient.html', permissions=permissions)
-        else:
-            return redirect(url_for('web.login'))
 
 
 class Medicine(MethodView):
@@ -203,19 +214,22 @@ class Medicine(MethodView):
         if permissions == None:
             return redirect(url_for('web.login'))
         else:
-            sql = text('select * from {table}'.format(table=medication))
-            row = dbsession.execute(sql).fetchall()
-            data = []
-            for i in row:
-                data.append({
-                    "id": i.id,
-                    "name": i.name,
-                    "effect": i.effect,
-                    "side_effect": i.side_effect,
-                    "drug_class": i.drug_class
-                })
-            print(data)
-            return render_template('medications.html', permissions=permissions, medical_data=json.dumps(data))
+            try:
+                sql = text('select * from {table}'.format(table=medication))
+                row = dbsession.execute(sql).fetchall()
+                data = []
+                for i in row:
+                    data.append({
+                        "id": i.id,
+                        "name": i.name,
+                        "effect": i.effect,
+                        "side_effect": i.side_effect,
+                        "drug_class": i.drug_class
+                    })
+                return render_template('medications.html', permissions=permissions, medical_data=json.dumps(data))
+            except Exception as e:
+                print(e)
+                return redirect(url_for('web.index'))
         
     def post(self):
         data = request.get_json()
@@ -238,7 +252,125 @@ class Medicine(MethodView):
                     "result": 1,
                     "message": str(e),
                 }
+        elif data['action'] == 'search':
+            with Session.begin() as db:
+                try:
+                    medical_class = {
+                        "injection": 0,
+                        "oral": 1,
+                        "external": 2,
+                        "other": 3
+                    }
+                    if data.get('class') == 'all':
+                        row = db.execute(
+                            text(
+                                "select * from {medication} where name LIKE '{name}%'".format(
+                                    medication=medication,
+                                    name=data.get('name')
+                            ))).fetchall()
+                    else:
+                        row = db.execute(
+                            text(
+                                "select * from {medication} where name LIKE '{name}%' and drug_class = {drug_class}".format(
+                                    medication=medication,
+                                    name=data.get('name'),
+                                    drug_class=medical_class.get(data.get('class'))
+                            ))).fetchall()
+                    data = []
+                    for i in row:
+                        data.append({
+                            "id": i.id,
+                            "name": i.name,
+                            "effect": i.effect,
+                            "side_effect": i.side_effect,
+                            "drug_class": i.drug_class
+                        })
+                    result = {
+                        "result": 0,
+                        "message": "成功",
+                        "data": data
+                    }
+                except Exception as e:
+                    print(e)
+                    result = {
+                        "result": 1,
+                        "message": str(e),
+                    }
+        elif data['action'] == 'detail':
+            try:
+                row = dbsession.execute(
+                    text(
+                        "select * from {medication} where id = :id".format(
+                            medication=medication
+                    )),
+                    [{"id": data.get("id")}]
+                ).fetchall()[0]
+                result = {
+                    "result": 0,
+                    "message": "成功",
+                    "data": {
+                        "id": row.id,
+                        "name": row.name,
+                        "effect": row.effect,
+                        "side_effect": row.side_effect,
+                        "drug_class": row.drug_class
+                }}
+            except Exception as e:
+                print(e)
+                result = {
+                    "result": 1,
+                    "message": str(e),
+                }
         return jsonify(result)
+    
+    def put(self):
+        data = request.get_json()
+        try:
+            dbsession.query(Medication).filter(Medication.id == data.get('id')).update({
+                "name": data.get('name'),
+                "effect": data.get('effect'),
+                "side_effect": data.get('side_effect'),
+                "drug_class": data.get('class')
+            })
+            dbsession.commit()
+            result = {
+                "result": 0,
+                "message": "成功",
+            }
+        except Exception as e:
+            print(e)
+            result = {
+                "result": 1,
+                "message": str(e),
+            }
+        return jsonify(result)
+    
+    def delete(self):
+        id = request.get_json().get('id')
+        try:
+            for i in id:
+                dbsession.query(Medication).filter(Medication.id == i).delete()
+                dbsession.commit()
+            result = {
+                "result": 0,
+                "message": "成功",
+            }
+        except Exception as e:
+            print(e)
+            result = {
+                "result": 1,
+                "message": str(e),
+            }
+        return jsonify(result)
+
+
+class Patient(MethodView):
+    def get(self):
+        permissions = Login_Check.login_required()
+        if permissions != 4:
+            return render_template('patient.html', permissions=permissions)
+        else:
+            return redirect(url_for('web.login'))
 
 
 class Database(MethodView):

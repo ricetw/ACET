@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (result.result === 0)
                 window.location.href = "/web/index";
             else
-                resultDiv.innerHTML = `登入失敗！醫護號或密碼錯誤`;
+                resultDiv.innerHTML = result.message;
         })
         .catch(error => {
             console.error("登入失敗：", error);

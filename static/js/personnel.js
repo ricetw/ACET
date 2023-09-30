@@ -59,8 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .then(response => response.json())
             .then(result => {
-                if (result.result === 0)
-                {
+                if (result.result === 0){
                     renderDetail(result.data);
                     detailModel.style.display = "block";
                 }
@@ -75,9 +74,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     window.addEventListener("click", function (event) {
-        if (event.target == detailModel) {
+        if (event.target == detailModel)
             detailModel.style.display = "none";
-        }
     });
 
     // 編輯人員
@@ -100,8 +98,8 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .then(response => response.json())
             .then(result => {
-                if (result.result === 0)
-                {
+                if (result.result === 0){
+                    document.getElementById("edit_id").value = result.data.uid;
                     document.getElementById("edit_ms_id").value = result.data.ms_id;
                     document.getElementById("edit_name").value = result.data.name;
                     document.getElementById("edit_permissions-select").value = result.data.permissions === 1 ? "supervisor" : "nurse";
@@ -122,15 +120,15 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     window.addEventListener("click", function (event) {
-        if (event.target == editmodal) {
+        if (event.target == editmodal)
             editmodal.style.display = "none";
-        }
     });
 
     const editForm = document.getElementById("editForm");
     editForm.addEventListener("submit", function (e){
         e.preventDefault();
 
+        let uid = document.getElementById("edit_id").value;
         let ms_id = document.getElementById("edit_ms_id").value;
         let name = document.getElementById("edit_name").value;
         let permissions_select = document.getElementById("edit_permissions-select").value;
@@ -141,6 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
             permissions_select = 2;
 
         const person_data = {
+            uid: uid,
             ms_id: ms_id,
             name: name,
             permissions: permissions_select
@@ -263,9 +262,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     window.addEventListener("click", function (event) {
-        if (event.target == addmodal) {
+        if (event.target == addmodal)
             addmodal.style.display = "none";
-        }
     });
 
     const personForm = document.getElementById("personForm");
@@ -302,7 +300,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (result.result === 0)
                 window.location.href = "/web/personnel";
             else
-                alert("新增失敗");
+                alert("新增失敗", result.message);
         })
         .catch(error => {
             console.error("錯誤", error);

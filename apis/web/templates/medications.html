@@ -25,6 +25,7 @@ title_text %} 藥物管理 {% endblock %} {%block content %}
 </div>
 <br /><br /><br />
 
+<!--藥物列表-->
 <div>
   <h2>藥物列表</h2>
   <button id="delete-medical" type="button">刪除藥物</button>
@@ -80,6 +81,58 @@ title_text %} 藥物管理 {% endblock %} {%block content %}
       />
       <br /><br />
       <button type="submit">新增</button>
+    </form>
+  </div>
+</div>
+
+<!--檢視詳細視窗-->
+<div id="detailModal" class="detail-modal">
+  <div class="detail-modal-content">
+    <span class="detail-close">&times;</span>
+    <h2>藥物詳細資料</h2>
+    <div id="detail"></div>
+  </div>
+</div>
+
+<!--編輯藥物視窗-->
+<div id="editModal" class="edit-modal">
+  <div class="edit-modal-content">
+    <span class="edit-close">&times;</span>
+    <form id="editForm">
+      <h2>編輯藥物</h2>
+      <input id="edit-medical-id" name="edit-medical-id" type="hidden" />
+      <label for="edit-medical-class">藥物類別</label>
+      <select id="edit-medical-class" name="edit-medical-class">
+        <option value="injection">注射藥物</option>
+        <option value="oral">口服藥物</option>
+        <option value="external">外用藥物</option>
+        <option value="other">其他藥物</option></select
+      ><br /><br />
+      <label for="edit-medical-name">藥物名稱：</label>
+      <input
+        id="edit-medical-name"
+        name="edit-medical-name"
+        type="text"
+        required
+      />
+      <br /><br />
+      <label for="edit-medical-effect">藥物效果：</label>
+      <input
+        id="edit-medical-effect"
+        name="edit-medical-effect"
+        type="text"
+        required
+      />
+      <br /><br />
+      <label for="edit-medical-side-effect">藥物副作用：</label>
+      <input
+        id="edit-medical-side-effect"
+        name="edit-medical-side-effect"
+        type="text"
+        required
+      />
+      <br /><br />
+      <button type="submit">修改</button>
     </form>
   </div>
 </div>
