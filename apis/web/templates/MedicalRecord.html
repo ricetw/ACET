@@ -1,0 +1,31 @@
+{% extends "base.html" %} {% block title %} 病歷紀錄 {% endblock %} {% block
+title_text %} 病歷紀錄 {% endblock %} {% block content %}
+<div id="data" data-data="{{ data }}"></div>
+<div>
+  <label for="ms_id">醫生編號：</label>
+  <input type="text" id="ms_id" name="ms_id" />
+  <label for="medical_record_number">病歷號：</label>
+  <input type="text" id="medical_record_number" name="medical_record_number" />
+</div>
+<!--病歷列表-->
+<div>
+  <h2>病歷列表</h2>
+  <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>病歷歷史編號</th>
+        <th>病歷號</th>
+        <th>日期</th>
+        <th>醫生編號</th>
+        <th>主治醫師</th>
+        <th>病歷內容</th>
+        <th>用藥</th>
+        <th>住院</th>
+      </tr>
+    </thead>
+    <tbody id="medical_records_list"></tbody>
+  </table>
+</div>
+{% endblock %} {% block scripts %}
+<script src="{{ url_for('static', filename='js/MedicalRecord.js') }}"></script>
+{% endblock %}

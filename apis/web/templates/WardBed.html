@@ -1,0 +1,36 @@
+{% extends "base.html" %}{% block title %}病床資料{% endblock %} {% block
+title_text %}病床資料紀錄{% endblock %} {% block content %}
+<div id="data" data-data="{{ data }}"></div>
+<br />
+
+<div>
+  <div>
+    <label for="medical_recode_number">病歷號：</label>
+    <input
+      type="text"
+      id="medical_recode_number"
+      name="medical_recode_number"
+    />
+  </div>
+</div>
+<br /><br />
+
+<div>
+  <h2>病床資料</h2>
+  <br /><br />
+  <table class="table table-striped table-bordered">
+    <thead>
+      <th>病歷編號</th>
+      <th>病歷號</th>
+      <th>姓名</th>
+      <th>病房號</th>
+      <th>病床號</th>
+      <th>日期</th>
+    </thead>
+    <tbody id="wardBedList"></tbody>
+  </table>
+</div>
+
+{% endblock %} {% block scripts %}
+<script src="{{ url_for('static', filename='js/WardBed.js') }}"></script>
+{% endblock %}

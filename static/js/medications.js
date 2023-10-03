@@ -59,7 +59,10 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(response => response.json())
         .then(result => {
             if (result['result'] === 0)
+            {
+                console.log(result['data']);
                 renderMedical(result['data']);
+            }
             else{
                 console.log(result['message']);
                 alert('搜尋失敗');

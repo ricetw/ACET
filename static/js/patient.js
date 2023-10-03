@@ -60,8 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${data['medication']}</td>
                 <td>${data['notice']}</td>
                 <td class="col-1">${data['hospitalization'] === true ? "是" : "否"}</td>
-                <td class="col-1"><button class="btn btn-primary" onclick="location.href='/web/medical_record/${patientData['medical_record_number']}'">查看</button></td>
-                <td class="col-1"><button class="btn btn-primary" onclick="location.href='/web/medical_record/${patientData['medical_record_number']}/edit'">修改</button></td>
+                <td class="col-1"><button class="btn btn-primary" onclick="location.href='/web/medical_record/${patientData['medical_record_number']}&${data['id']}'">查看</button></td>
             `;
             medicalRecordsList.appendChild(tr);
         });

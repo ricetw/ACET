@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(result => {
             if (result['result'] == 0)
-                location.href = `/web/medical_record/${patientData['medical_record_number']}`;
+                location.href = `/web/patient/${patientData['medical_record_number']}`;
                 // console.log(result['message']);
             else {
                 console.log(result['message']);

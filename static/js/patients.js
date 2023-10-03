@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
         datas.forEach(data => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td class="col-1"><input type="checkbox" name="person" value="${data['id']}"></td>
                 <td>${data['medical_record_number']}</td>
                 <td>${data['name']}</td>
                 <td>${data['gender']}</td>
@@ -17,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${data['birthday']}</td>
                 <td class="col-1"><button class="viewbtn btn-sm btn-outline-secondary" type="button" onclick="location.href='/web/patient/${data['medical_record_number']}'">查看</button></td>
                 <td class="col-1"><button class="editbtn btn-sm btn-outline-secondary" data-id="${data["medical_record_number"]}">編輯</button></td>
-                <td class="col-1"><button class="deletebtn btn-sm btn-outline-secondary" data-id="${data["id"]}">刪除</button></td>
             `;
             patientList.appendChild(tr);
         });
@@ -209,44 +207,4 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('錯誤');
         });
     });
-
-    // 刪除病人
-    const deletebtn = document.getElementById('deletebtn');
-    deletebtn.addEventListener('click', function(){
-        const selectCheckBoxes = document.querySelectorAll('input[name="person"]:checked');
-        const ids = Array.from(selectCheckBoxes).map(checkbox => checkbox.value);
-        data = {ids: ids}
-        deletePerson(data)
-    });
-
-    patientList.addEventListener('click', function(e) {
-        if (e.target.className === 'deletebtn btn-sm btn-outline-secondary') {
-            const id = e.target.dataset.id;
-            data = {ids: id}
-            deletePerson(data)
-        }
-    });
-
-    function deletePerson(data) {
-        fetch('/web/patient', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/Json'
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(result => {
-            if (result['result'] === 0)
-                window.location.reload();
-            else {
-                console.log(result['message'])
-                alert('錯誤');
-            }
-        })
-        .catch(error => {
-            console.log('Error: ', error);
-            alert('錯誤');
-        })
-    }
 });

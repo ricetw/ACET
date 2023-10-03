@@ -1,3 +1,4 @@
+import datetime
 import json
 import random
 import time
@@ -468,25 +469,6 @@ class PatientURL(MethodView):
                 "message": str(e)
             }
         return jsonify(result)
-    
-    def delete(self):
-        ids = request.get_json().get('ids')
-        print(ids)
-        try:
-            for i in ids:
-                dbsession.query(Patient).filter(Patient.id == i).delete()
-                dbsession.commit()
-            result = {
-                "result": 0,
-                "message": "成功"
-            }
-        except Exception as e:
-            print(e)
-            result = {
-                "result": 1,
-                "message": str(e)
-            }
-        return jsonify(result)
 
 
 class PatientMedicalRecord(MethodView):
@@ -586,11 +568,13 @@ class AddMedicalRecord(MethodView):
         data = request.get_json()
         print(data)
         try:
-            # cases = data.get('content')
+            cases = ', '.join(data.get('content', []))
+            medication = ', '.join(data.get('medicine', []))
+            print(data.get('datetime'))
             dbsession.add(Medical_Records(
                 medical_record_number = data.get('medical_record_number'),
-                cases = data.get('content'),
-                medication = data.get('medicine'),
+                cases = cases,
+                medication = medication,
                 notice = data.get('notice'),
                 hospitalization = data.get('hospitalization'),
                 doctor = data.get('doctorid'),
@@ -620,22 +604,45 @@ class AddMedicalRecord(MethodView):
         return jsonify(result)
 
 
-class EditMedicalRecord(MethodView):
-    def get(self):
-        permissions = Login_Check.login_required()
-        if permissions == None:
-            return redirect(url_for('web.login'))
-        else:
-            return render_template('EditMedicalRecord.html', permissions=permissions)
-
-
 class ViewMedicalRecord(MethodView):
-    def get(self):
+    def get(self, pid, mid):
         permissions = Login_Check.login_required()
         if permissions == None:
             return redirect(url_for('web.login'))
         else:
-            return render_template('ViewMedicalRecord.html', permissions=permissions)
+            try:
+                patient = dbsession.query(Patient).filter(Patient.medical_record_number == pid)[0]
+                medical_rocord = dbsession.query(Medical_Records).filter(Medical_Records.id == mid)[0]
+                cases = medical_rocord.cases.split(', ')
+                medication = medical_rocord.medication.split(', ')
+                ward = dbsession.query(Ward_Bed).filter(Ward_Bed.medical_record_number == pid, Ward_Bed.medical_record_id == mid).order_by(Ward_Bed.time.desc())[0]
+                data = {
+                    "medical_record_number": patient.medical_record_number,
+                    "name": patient.name,
+                    "gender": patient.gender,
+                    "birthday": patient.birthday.strftime("%Y-%m-%d"),
+                    "age": time.localtime().tm_year - patient.birthday.year,
+                    "height": patient.height,
+                    "weight": patient.weight,
+                    "datetime": medical_rocord.time.strftime("%Y-%m-%d %H:%M"),
+                    "doctorid": medical_rocord.doctor,
+                    "cases": cases,
+                    "medication": medication,
+                    "notice": medical_rocord.notice,
+                    "hospitalization": medical_rocord.hospitalization,
+                    "ward": ward.ward_id,
+                    "bed": ward.bed_number
+                }
+                print(data)
+                return render_template(
+                    'ViewMedicalRecord.html', 
+                    permissions=permissions, 
+                    name = data.get('name'),
+                    data=json.dumps(data))
+            except Exception as e:
+                print(e)
+                return redirect(url_for('web.index'))
+            
 
 
 class MedicalRecord(MethodView):
@@ -644,7 +651,136 @@ class MedicalRecord(MethodView):
         if permissions == None:
             return redirect(url_for('web.login'))
         else:
-            return render_template('MedicalRecord.html', permissions=permissions)
+            try:
+                row = dbsession.query(Medical_Records).all()
+                print(row)
+                data = []
+                for i in row:
+                    doctor = dbsession.query(Medical_Staff).filter(Medical_Staff.ms_id == i.doctor)[0]
+                    data.append({
+                        "id": i.id,
+                        "medical_record_number": i.medical_record_number,
+                        "cases": i.cases,
+                        "medication": i.medication,
+                        "notice": i.notice,
+                        "hospitalization": i.hospitalization,
+                        "doctor_id": doctor.ms_id,
+                        "doctor": doctor.name,
+                        "time": i.time.strftime("%Y-%m-%d")
+                    })
+                print(data)
+                return render_template('MedicalRecord.html', permissions=permissions, data=json.dumps(data))
+            except Exception as e:
+                print(e)
+                return redirect(url_for('web.index'))
+            
+    def post(self):
+        data = request.get_json()
+        print(data)
+        print(type(data.get('date')))
+        with Session.begin() as db:
+            try:
+                row =db.query(Medical_Records).filter(
+                    Medical_Records.medical_record_number.like(
+                        data.get('medical_record_number')+'%'),
+                    Medical_Records.doctor.like(data.get('ms_id')+'%')
+                ).all()
+                print(row)
+                data = []
+                for i in row:
+                    doctor = dbsession.query(Medical_Staff).filter(Medical_Staff.ms_id == i.doctor)[0]
+                    data.append({
+                        "id": i.id,
+                        "medical_record_number": i.medical_record_number,
+                        "cases": i.cases,
+                        "medication": i.medication,
+                        "notice": i.notice,
+                        "hospitalization": i.hospitalization,
+                        "doctor_id": doctor.ms_id,
+                        "doctor": doctor.name,
+                        "time": i.time.strftime("%Y-%m-%d")
+                    })
+                print(data)
+                result = {
+                    "result": 0,
+                    "message": "成功",
+                    "data": data
+                }
+            except Exception as e:
+                print(e)
+                result = {
+                    "result": 1,
+                    "message": str(e),
+                }
+        return jsonify(result)
+
+
+class WardBed(MethodView):
+    def get(self):
+        permissions = Login_Check.login_required()
+        if permissions == None:
+            return redirect(url_for('web.login'))
+        else:
+            try:
+                row = dbsession.query(Ward_Bed).all()
+                data = []
+                for i in row:
+                    patient = dbsession.query(Patient).filter(Patient.medical_record_number == i.medical_record_number)[0]
+                    data.append({
+                        "id": i.id,
+                        "medical_record_id": i.medical_record_id,
+                        "medical_record_number": i.medical_record_number,
+                        "name": patient.name,
+                        "ward_id": i.ward_id,
+                        "bed_number": i.bed_number,
+                        "time": i.time.strftime("%Y-%m-%d")
+                    })
+                print(data)
+                return render_template(
+                    'WardBed.html', 
+                    permissions=permissions, 
+                    data=json.dumps(data)
+                )
+            except Exception as e:
+                print(e)
+                return redirect(url_for('web.index'))
+    
+    def post(self):
+        data = request.get_json()
+        print(data)
+        with Session.begin() as db:
+            try:
+                print( data.get('medical_recode_number'))
+                row = db.query(Ward_Bed).filter(
+                    Ward_Bed.medical_record_number.like(
+                        data.get('medical_recode_number')+'%'
+                )).all()
+                print(row)
+                data = []
+                for i in row:
+                    patient = dbsession.query(Patient).filter(Patient.medical_record_number == i.medical_record_number)[0]
+                    data.append({
+                        "id": i.id,
+                        "medical_record_id": i.medical_record_id,
+                        "medical_record_number": i.medical_record_number,
+                        "name": patient.name,
+                        "ward_id": i.ward_id,
+                        "bed_number": i.bed_number,
+                        "time": i.time.strftime("%Y-%m-%d")
+                    })
+                print(data)
+                result = {
+                    "result": 0,
+                    "message": "成功",
+                    "data": data
+                }
+            except Exception as e:
+                print(e)
+                result = {
+                    "result": 1,
+                    "message": str(e),
+                }
+        return jsonify(result)
 
 
 class Database(MethodView):
