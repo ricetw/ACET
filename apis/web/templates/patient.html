@@ -1,63 +1,54 @@
-{% extends "base.html" %} {% block title %} 病人管理 {% endblock %} {% block
-title_text %} 病人管理 {% endblock %} {% block content %}
-<div id="personnel-data" data-personnel="{{ personnel_data}}"></div>
-
-<div>
-  <div>
-    <input id="search" type="text" placeholder="請輸入病歷號" />
-    <button id="searchbtn">搜尋</button>
-    <button id="addbtn">新增病人</button>
-  </div>
-</div>
+{% extends "base.html" %} {% block title %} 病人資料 {% endblock %} {% block
+title_text %} {{ name }} {% endblock %} {% block content %}
+<div id="patient_data" data-patient="{{ patient }}"></div>
+<div
+  id="medical_records_data"
+  data-medical-records="{{ medical_records }}"
+></div>
 <br />
-
+<!--病患資訊-->
 <div>
-  <h2>病人列表</h2>
-  <button id="deletebtn">刪除</button>
-  <br />
+  <label for="patient_id">病歷號：</label>
+  <input type="text" id="patient_id" name="patient_id" disabled />
+  <label for="patient_name">病人姓名：</label>
+  <input type="text" id="patient_name" name="patient_name" disabled />
+  <br /><br />
+  <label for="patient_gender">病人性別：</label>
+  <input type="text" id="patient_gender" name="patient_gender" disabled />
+  <br /><br />
+  <label for="patient_age">病人年齡：</label>
+  <input type="text" id="patient_age" name="patient_age" disabled />
+  <label for="patient_birthday">病人生日：</label>
+  <input type="text" id="patient_birthday" name="patient_birthday" disabled />
+  <br /><br />
+  <label for="patient_height">病人身高：</label>
+  <input type="text" id="patient_height" name="patient_height" />
+  <label for="patient_weight">病人體重：</label>
+  <input type="text" id="patient_weight" name="patient_weight" />
+  <br /><br />
+  <button id="update_patient_data">更新病人資料</button>
+  <button id="add_medical_record">新增病歷</button>
+</div>
+<br /><br />
+<!--病歷紀錄-->
+<div>
+  <h2>病歷紀錄</h2>
   <table class="table table-striped table-bordered">
     <thead>
       <tr>
-        <th>操作</th>
-        <th>病歷號</th>
-        <th>房號</th>
-        <th>床號</th>
-        <th>姓名</th>
+        <th>病歷歷史編號</th>
+        <th>病歷日期</th>
+        <th>醫師編號</th>
+        <th>主治醫師</th>
+        <th>病歷內容</th>
+        <th>用藥</th>
+        <th>備註</th>
+        <th>住院</th>
       </tr>
     </thead>
-    <tbody id="person_list"></tbody>
+    <tbody id="medical_records_list"></tbody>
   </table>
 </div>
-<!--
-    <div id="myModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>新增人員</h2>
-        <form id="personForm">
-          <label for="ms_id">醫護號:</label>
-          <input type="text" id="ms_id" name="ms_id" required /><br /><br />
-    
-          <label for="name">姓名:</label>
-          <input type="text" id="name" name="name" required /><br /><br />
-    
-          <label for="password">密碼:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            required
-          /><br /><br />
-    
-          <label for="permissions">權限類別:</label>
-          <select id="permissions-select" name="permissions">
-            <option value="supervisor">主管</option>
-            <option value="nurse">醫護人員</option></select
-          ><br /><br />
-    
-          <button type="submit">新增</button>
-        </form>
-      </div>
-    </div>-->
 {% endblock %} {% block scripts %}
 <script src="{{ url_for('static', filename='js/patient.js') }}"></script>
 {% endblock %}

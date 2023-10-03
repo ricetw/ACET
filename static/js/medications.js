@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // 搜尋藥物
     const medical_class = document.getElementById('medical-class');
     const medical_name_input = document.getElementById('medical-name');
+
     medical_class.addEventListener('change', function() {
         const select_class = document.getElementById('medical-class').value;
         const medical_name = document.getElementById('medical-name').value;
@@ -35,6 +36,7 @@ document.addEventListener("DOMContentLoaded", function() {
         };
         searchMedical(data);
     });
+
     medical_name_input.addEventListener('input', function() {
         const select_class = document.getElementById('medical-class').value;
         const medical_name = document.getElementById('medical-name').value;
@@ -45,6 +47,7 @@ document.addEventListener("DOMContentLoaded", function() {
         };
         searchMedical(data);
     });
+
     function searchMedical(data) {
         fetch('/web/medications', {
             method: 'POST',
@@ -59,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 renderMedical(result['data']);
             else{
                 console.log(result['message']);
-                alert('搜尋失敗！');
+                alert('搜尋失敗');
             }
         })
         .catch(error => {
@@ -215,8 +218,7 @@ document.addEventListener("DOMContentLoaded", function() {
             })
             .then(response => response.json())
             .then(result => {
-                if (result['result'] === 0)
-                {
+                if (result['result'] === 0) {
                     const medical_data = result['data'];
                     const medicalClass = medical_data['drug_class'] === 0 ? 'injection' : medical_data['drug_class'] === 1 ? 'oral' : medical_data['drug_class'] === 2 ? 'external' : 'other';
                     document.getElementById('edit-medical-id').value = medical_data['id'];
@@ -226,7 +228,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     document.getElementById('edit-medical-side-effect').value = medical_data['side_effect'];
                     editModal.style.display = "block";
                 }
-                else{
+                else {
                     console.log(result['message']);
                     alert('搜尋失敗！');
                 }
@@ -280,10 +282,9 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(result => {
             if (result['result'] === 0)
                 window.location.reload();
-            else
-            {
+            else{
                 console.log(result['message']);
-                alert('新增失敗！');
+                alert('更新失敗');
             }
         })
         .catch(error => {

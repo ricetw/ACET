@@ -237,7 +237,9 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(response => response.json())
         .then(result => {
             if (result.result === 0)
-                renderPersonnel(result.data);
+            {
+            console.log(result.data);
+                renderPersonnel(result.data);}
             else
                 alert("查詢失敗");
         })

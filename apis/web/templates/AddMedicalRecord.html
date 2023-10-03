@@ -1,0 +1,86 @@
+{% extends "base.html" %} {% block title %} 新增病例 {% endblock %} {% block
+title_text %} 新增病例 - {{ name }} {% endblock %} {% block content %}
+<div id="patient_data" data-patient="{{ patient }}"></div>
+<br />
+<!--病患資訊-->
+<div>
+  <label for="patient_id">病歷號：</label>
+  <input type="text" id="patient_id" name="patient_id" disabled />
+  <label for="patient_name">病人姓名：</label>
+  <input type="text" id="patient_name" name="patient_name" disabled />
+  <label for="patient_gender">病人性別：</label>
+  <input type="text" id="patient_gender" name="patient_gender" disabled />
+  <label for="patient_age">病人年齡：</label>
+  <input type="text" id="patient_age" name="patient_age" disabled />
+  <label for="patient_birthday">病人生日：</label>
+  <input type="date" id="patient_birthday" name="patient_birthday" disabled />
+  <br /><br />
+  <label for="patient_height">病人身高：</label>
+  <input type="text" id="patient_height" name="patient_height" disabled />
+  <label for="patient_weight">病人體重：</label>
+  <input type="text" id="patient_weight" name="patient_weight" disabled />
+</div>
+<br />
+<!--新增病歷-->
+<div>
+  <h2>新增病歷</h2>
+  <form id="addForm">
+    <label for="add_date">病歷日期：</label>
+    <input type="date" id="add_date" name="add_date" />
+    <input type="time" id="add_time" name="add_time" />
+    <button type="button" id="today_button">今天</button>
+    <br /><br />
+    <label for="add_doctor_id">醫師編號：</label>
+    <input type="text" id="add_doctor_id" name="add_doctor_id" />
+    <br /><br />
+    <label for="add_content">病歷內容：</label>
+    <div id="contentInputs">
+      <input type="text" id="add_content_1" name="add_content_1" />
+    </div>
+    <button type="button" id="add_content_button">+</button>
+    <br /><br />
+    <label for="add_medicine">用藥：</label>
+    <br />
+    <label for="drug_class">藥品類別：</label>
+    <select id="drug_class" name="drug_class">
+      <option value="all">全部</option>
+      <option value="injection">注射</option>
+      <option value="oral">口服</option>
+      <option value="external">外用</option>
+      <option value="other">其他</option>
+    </select>
+    <div id="medicineInputs">
+      <input
+        type="text"
+        id="add_medicine_1"
+        name="add_medicine_1"
+        list="medicineList_1"
+      />
+      <datalist id="medicineList_1"></datalist>
+    </div>
+    <button type="button" id="add_medicine_button">+</button>
+    <br /><br />
+    <label for="add_notice">備註：</label>
+    <input type="text" id="add_notice" name="add_notice" />
+    <br /><br />
+    <label for="add_hospitalization">住院：</label>
+    <input
+      type="checkbox"
+      id="add_hospitalization"
+      name="add_hospitalization"
+    />
+    <br /><br />
+    <div id="hospitalizatonInputs" style="display: none">
+      <label for="add_room">房號：</label>
+      <input type="text" id="add_room" name="add_room" />
+      <br /><br />
+      <label for="add_bed">床號：</label>
+      <input type="text" id="add_bed" name="add_bed" />
+      <br /><br />
+    </div>
+    <button type="submit" id="add_submit">新增</button>
+  </form>
+</div>
+{% endblock %} {% block scripts %}
+<script src="{{ url_for('static', filename='js/AddMedicalRecord.js') }}"></script>
+{% endblock %}

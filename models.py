@@ -3,7 +3,7 @@ import datetime
 import os
 
 from configs import SQL_Server
-from sqlalchemy import ARRAY, Boolean, Column, DateTime, Float, Integer, String, TEXT
+from sqlalchemy import ARRAY, Boolean, Column, Date, DateTime, Float, Integer, String, TEXT
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base
 
@@ -45,18 +45,20 @@ class Patient(Base):
     medical_record_number = Column(String(255), nullable=False, unique=True)
     name = Column(String(255), nullable=False)
     gender = Column(Integer, nullable=False)
-    birthday = Column(DateTime(timezone=False), nullable=False)
+    birthday = Column(Date, nullable=False)
+    height = Column(Float)
+    weight = Column(Float)
 
 
 class Medical_Records(Base):
     __tablename__ = "Medical_records"
     id = Column(Integer, nullable=False, primary_key=True)
     medical_record_number = Column(String(255), nullable=False)
-    height = Column(Float, nullable=False)
-    weight = Column(Float, nullable=False)
     cases = Column(String(2048), nullable=False)
     medication = Column(String(2048), nullable=False)
     notice = Column(String(2048), nullable=False)
+    hospitalization = Column(Boolean, nullable=False)
+    doctor = Column(String(255), nullable=False)
     time = Column(DateTime(timezone=False), nullable=False)
 
 
@@ -66,7 +68,20 @@ class Ward_Bed(Base):
     ward_id = Column(String(255), nullable=False)
     bed_number = Column(Integer, nullable=False)
     medical_record_number = Column(String(255), nullable=False)
-    name = Column(String(255), nullable=False)
+    medical_record_id = Column(Integer, nullable=False)
+    time = Column(DateTime(timezone=False), nullable=False)
+    
+
+class MedicationTime(Base):
+    __tablename__ = "MedicationTime"
+    id = Column(Integer, nullable=False, primary_key=True)
+    medical_record_id = Column(Integer, nullable=False)
+    medical_record_number = Column(String(255), nullable=False)
+    medication = Column(String(255), nullable=False)
+    drug_class = Column(Integer, nullable=False)
+    notice = Column(String(255), nullable=False)
+    doctor = Column(String(255), nullable=False)
+    time = Column(DateTime(timezone=False), nullable=False)
 
 
 if __name__ == "__main__":

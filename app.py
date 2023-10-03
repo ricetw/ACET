@@ -8,6 +8,7 @@ from configs import SQL_Server
 from models import Medical_Staff
 
 from apis.web import web_bp
+from apis.mobile import mobile_bp
 
 engine = create_engine(SQL_Server)
 Session = sessionmaker(bind=engine)
@@ -17,6 +18,7 @@ app = Flask(__name__, static_folder='static')
 app.config.from_pyfile('./configs.py')
 
 app.register_blueprint(web_bp, url_prefix='/web')
+app.register_blueprint(mobile_bp)
 
 @app.route('/')
 def home():
@@ -38,4 +40,4 @@ if __name__ == '__main__':
             permissions=0
         ))
         dbsession.commit()
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
