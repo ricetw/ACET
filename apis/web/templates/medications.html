@@ -1,0 +1,143 @@
+{% extends "base.html" %} {% block title %} 藥物管理 {% endblock %} {% block
+title_text %} 藥物管理 {% endblock %} {%block content %}
+
+<div id="medical-data" data-medical="{{ medical_data }}"></div>
+<br />
+
+<div>
+  <div>
+    <label for="medical-class">藥物類別</label>
+    <select id="medical-class" name="medical-class">
+      <option value="all">全部</option>
+      <option value="injection">注射藥物</option>
+      <option value="oral">口服藥物</option>
+      <option value="external">外用藥物</option>
+      <option value="other">其他藥物</option>
+    </select>
+  </div>
+  <br />
+  <div>
+    <label for="medical-name">藥物名稱：</label>
+    <input id="medical-name" name="medical-name" type="text" />
+    <br /><br />
+    <button id="add-medical" type="button">新增藥物</button>
+  </div>
+</div>
+<br /><br /><br />
+
+<!--藥物列表-->
+<div>
+  <h2>藥物列表</h2>
+  <button id="delete-medical" type="button">刪除藥物</button>
+  <br /><br />
+  <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>勾選</th>
+        <th>藥物類別</th>
+        <th>藥物名稱</th>
+      </tr>
+    </thead>
+    <tbody id="medical-list"></tbody>
+  </table>
+</div>
+
+<!--新增藥物視窗-->
+<div id="addModal" class="add-modal">
+  <div class="add-modal-content">
+    <span class="add-close">&times;</span>
+    <h2>新增藥物</h2>
+    <form id="addForm">
+      <label for="add-medical-class">藥物類別</label>
+      <select id="add-medical-class" name="add-medical-class">
+        <option value="injection">注射藥物</option>
+        <option value="oral">口服藥物</option>
+        <option value="external">外用藥物</option>
+        <option value="other">其他藥物</option>
+      </select>
+      <br /><br />
+      <label for="add-medical-name">藥物名稱：</label>
+      <input
+        id="add-medical-name"
+        name="add-medical-name"
+        type="text"
+        required
+      />
+      <br /><br />
+      <label for="add-medical-effect">藥物效果：</label>
+      <input
+        id="add-medical-effect"
+        name="add-medical-effect"
+        type="text"
+        required
+      />
+      <br /><br />
+      <label for="add-medical-side-effect">藥物副作用：</label>
+      <input
+        id="add-medical-side-effect"
+        name="add-medical-side-effect"
+        type="text"
+        required
+      />
+      <br /><br />
+      <button type="submit">新增</button>
+    </form>
+  </div>
+</div>
+
+<!--檢視詳細視窗-->
+<div id="detailModal" class="detail-modal">
+  <div class="detail-modal-content">
+    <span class="detail-close">&times;</span>
+    <h2>藥物詳細資料</h2>
+    <div id="detail"></div>
+  </div>
+</div>
+
+<!--編輯藥物視窗-->
+<div id="editModal" class="edit-modal">
+  <div class="edit-modal-content">
+    <span class="edit-close">&times;</span>
+    <form id="editForm">
+      <h2>編輯藥物</h2>
+      <input id="edit-medical-id" name="edit-medical-id" type="hidden" />
+      <label for="edit-medical-class">藥物類別</label>
+      <select id="edit-medical-class" name="edit-medical-class">
+        <option value="injection">注射藥物</option>
+        <option value="oral">口服藥物</option>
+        <option value="external">外用藥物</option>
+        <option value="other">其他藥物</option></select
+      ><br /><br />
+      <label for="edit-medical-name">藥物名稱：</label>
+      <input
+        id="edit-medical-name"
+        name="edit-medical-name"
+        type="text"
+        class="w-auto h-auto"
+        required
+      />
+      <br /><br />
+      <label for="edit-medical-effect">藥物效果：</label>
+      <input
+        id="edit-medical-effect"
+        name="edit-medical-effect"
+        type="text"
+        required
+      />
+      <br /><br />
+      <label for="edit-medical-side-effect">藥物副作用：</label>
+      <input
+        id="edit-medical-side-effect"
+        name="edit-medical-side-effect"
+        type="text"
+        required
+      />
+      <br /><br />
+      <button type="submit">修改</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %} {% block scripts %}
+<script src="{{ url_for('static', filename='js/medications.js') }}"></script>
+{% endblock %}

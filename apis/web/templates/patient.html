@@ -1,0 +1,54 @@
+{% extends "base.html" %} {% block title %} 病人資料 {% endblock %} {% block
+title_text %} {{ name }} {% endblock %} {% block content %}
+<div id="patient_data" data-patient="{{ patient }}"></div>
+<div
+  id="medical_records_data"
+  data-medical-records="{{ medical_records }}"
+></div>
+<br />
+<!--病患資訊-->
+<div>
+  <label for="patient_id">病歷號：</label>
+  <input type="text" id="patient_id" name="patient_id" disabled />
+  <label for="patient_name">病人姓名：</label>
+  <input type="text" id="patient_name" name="patient_name" disabled />
+  <br /><br />
+  <label for="patient_gender">病人性別：</label>
+  <input type="text" id="patient_gender" name="patient_gender" disabled />
+  <br /><br />
+  <label for="patient_age">病人年齡：</label>
+  <input type="text" id="patient_age" name="patient_age" disabled />
+  <label for="patient_birthday">病人生日：</label>
+  <input type="text" id="patient_birthday" name="patient_birthday" disabled />
+  <br /><br />
+  <label for="patient_height">病人身高：</label>
+  <input type="text" id="patient_height" name="patient_height" />
+  <label for="patient_weight">病人體重：</label>
+  <input type="text" id="patient_weight" name="patient_weight" />
+  <br /><br />
+  <button id="update_patient_data">更新病人資料</button>
+  <button id="add_medical_record">新增病歷</button>
+</div>
+<br /><br />
+<!--病歷紀錄-->
+<div>
+  <h2>病歷紀錄</h2>
+  <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>病歷歷史編號</th>
+        <th>病歷日期</th>
+        <th>醫師編號</th>
+        <th>主治醫師</th>
+        <th>病歷內容</th>
+        <th>用藥</th>
+        <th>備註</th>
+        <th>住院</th>
+      </tr>
+    </thead>
+    <tbody id="medical_records_list"></tbody>
+  </table>
+</div>
+{% endblock %} {% block scripts %}
+<script src="{{ url_for('static', filename='js/patient.js') }}"></script>
+{% endblock %}

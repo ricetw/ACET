@@ -1,0 +1,61 @@
+{% extends "base.html" %} {% block title %} 檢視病例 {% endblock %} {% block
+title_text %} 檢視病例 - {{ name }} {% endblock %} {% block content %}
+<div id="data" data-data="{{ data }}"></div>
+<br />
+<!--病患資訊-->
+<div>
+  <label for="patient_id">病歷號：</label>
+  <input type="text" id="patient_id" name="patient_id" disabled />
+  <label for="patient_name">病人姓名：</label>
+  <input type="text" id="patient_name" name="patient_name" disabled />
+  <label for="patient_gender">病人性別：</label>
+  <input type="text" id="patient_gender" name="patient_gender" disabled />
+  <label for="patient_age">病人年齡：</label>
+  <input type="text" id="patient_age" name="patient_age" disabled />
+  <label for="patient_birthday">病人生日：</label>
+  <input type="date" id="patient_birthday" name="patient_birthday" disabled />
+  <br /><br />
+  <label for="patient_height">病人身高：</label>
+  <input type="text" id="patient_height" name="patient_height" disabled />
+  <label for="patient_weight">病人體重：</label>
+  <input type="text" id="patient_weight" name="patient_weight" disabled />
+</div>
+<br />
+<!--檢視病例-->
+<div>
+  <h2>檢視病例</h2>
+  <button type="submit" id="back">返回</button>
+  <form>
+    <label for="date">病歷日期：</label>
+    <input type="date" id="date" name="date" disabled />
+    <input type="time" id="time" name="time" disabled />
+    <br /><br />
+    <label for="doctor_id">醫師編號：</label>
+    <input type="text" id="doctor_id" name="doctor_id" disabled />
+    <br /><br />
+    <label for="content">病歷內容：</label>
+    <div id="contentInputs"></div>
+    <br /><br />
+    <label for="medicine">用藥：</label>
+    <br />
+    <div id="medicineInputs"></div>
+    <br /><br />
+    <label for="notice">備註：</label>
+    <input type="text" id="notice" name="notice" disabled />
+    <br /><br />
+    <label for="hospitalization">住院：</label>
+    <input type="text" id="hospitalization" name="hospitalization" disabled />
+    <br /><br />
+    <div id="hospitalizatonInputs" style="display: none">
+      <label for="room">房號：</label>
+      <input type="text" id="room" name="room" disabled />
+      <br /><br />
+      <label for="bed">床號：</label>
+      <input type="text" id="bed" name="bed" disabled />
+      <br /><br />
+    </div>
+  </form>
+</div>
+{% endblock %} {% block scripts %}
+<script src="{{ url_for('static', filename='js/ViewMedicalRecord.js') }}"></script>
+{% endblock %}

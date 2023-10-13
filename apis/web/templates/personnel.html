@@ -1,0 +1,96 @@
+{% extends "base.html" %} {% block title %} 人員管理 {% endblock %} {% block
+title_text %} 人員管理 {% endblock %} {% block content %}
+
+<div id="personnel-data" data-personnel="{{ personnel_data }}"></div>
+<br />
+
+<div>
+  <div>
+    <input id="search" type="text" placeholder="請輸入醫護號" />
+    <button id="searchbtn">搜尋</button>
+    <button id="addPersonButton">新增人員</button>
+  </div>
+</div>
+<br /><br /><br />
+
+<div>
+  <h2>人員列表</h2>
+  <button id="deletebtn">刪除</button>
+  <br />
+  <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th class="text-center">勾選</th>
+        <th>醫護號</th>
+        <th>姓名</th>
+        <th>權限類別</th>
+      </tr>
+    </thead>
+    <tbody id="personnel_list"></tbody>
+  </table>
+</div>
+
+<div id="addModal" class="add-modal">
+  <div class="add-modal-content">
+    <span class="add-close">&times;</span>
+    <h2>新增人員</h2>
+    <form id="personForm">
+      <label for="ms_id">醫護號:</label>
+      <input type="text" id="ms_id" name="ms_id" required /><br /><br />
+
+      <label for="name">姓名:</label>
+      <input type="text" id="name" name="name" required /><br /><br />
+
+      <label for="password">密碼:</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        required
+      /><br /><br />
+
+      <label for="permissions">權限類別:</label>
+      <select id="permissions-select" name="permissions">
+        <option value="supervisor">主管</option>
+        <option value="nurse">醫護人員</option></select
+      ><br /><br />
+
+      <button type="submit">新增</button>
+    </form>
+  </div>
+</div>
+
+<div id="detailModel" class="detail-modal">
+  <div class="detail-modal-content">
+    <span class="detail-close">&times;</span>
+    <h2>人員詳細資料</h2>
+    <div id="detail"></div>
+  </div>
+</div>
+
+<div id="editModal" class="edit-modal">
+  <div class="edit-modal-content">
+    <span class="edit-close">&times;</span>
+    <form id="editForm">
+      <h2>編輯人員資料</h2>
+      <input type="hidden" id="edit_id" name="id" required /><br /><br />
+      <label for="ms_id">醫護號:</label>
+      <input type="text" id="edit_ms_id" name="ms_id" required /><br /><br />
+
+      <label for="name">姓名:</label>
+      <input type="text" id="edit_name" name="name" required /><br /><br />
+
+      <label for="permissions">權限類別:</label>
+      <select id="edit_permissions-select" name="permissions">
+        <option value="supervisor">主管</option>
+        <option value="nurse">醫護人員</option></select
+      ><br /><br />
+
+      <button type="submit">更新</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %} {% block scripts %}
+<script src="{{ url_for('static', filename='js/personnel.js') }}"></script>
+{% endblock %}
