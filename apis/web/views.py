@@ -12,9 +12,11 @@ from uuid import uuid4
 
 from configs import SQL_Server, MQTT_IP, MQTT_PORT
 from models import Medication, Medical_Records, Medical_Staff, Patient, Ward_Bed
+from img_generation.image_update import update
 
 engine = create_engine(SQL_Server)
 Session = sessionmaker(bind=engine)
+
 client = MQTT.Client()
 
 class Login_Check():
@@ -551,6 +553,7 @@ class AddMedicalRecord(MethodView):
         
     def post(self, id):
         data = request.get_json()
+        print(data)
         try:
             with Session.begin() as db:
                 cases = ', '.join(data.get('content', []))
@@ -576,17 +579,19 @@ class AddMedicalRecord(MethodView):
                             time = data.get('datetime')
                         ))
                         db.commit()
-                    client.connect(MQTT_IP, MQTT_PORT, 60)
-                    client.publish("ACET/ward/info", json.dumps({
-                        "medical_record_number": data.get('medical_record_number'),
-                        "medical_record_id": medical_record_id,
+                    update({
+                        "number": data.get('medical_record_number'),
+                        "id": str(medical_record_id),
                         "name": data.get('name'),
                         "case": cases,
                         "medication": medication,
                         "notice": data.get('notice'),
-                        "ward": data.get('ward'),
-                        "bed": data.get('bed'),
-                    }))
+                        "location": data.get('ward'),
+                        "bed number": data.get('bed'),
+                    }, {
+                        "number": data.get('medical_record_number'),
+                        "id": medical_record_id
+                    })
                 result = {
                     "result": 0,
                     "message": "成功"

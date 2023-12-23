@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from uuid import uuid4
@@ -15,6 +16,7 @@ Session = sessionmaker(bind=engine)
 dbsession = Session()
 
 app = Flask(__name__, static_folder='static')
+CORS(app)
 app.config.from_pyfile('./configs.py')
 
 app.register_blueprint(web_bp, url_prefix='/web')
@@ -24,7 +26,7 @@ app.register_blueprint(mobile_bp)
 def home():
     sql = text('select * from Medical_Staff')
     row = dbsession.execute(sql).fetchall()
-    print(row)
+    # print(row)
     return "OK"
 
 if __name__ == '__main__':

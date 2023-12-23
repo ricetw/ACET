@@ -1,0 +1,9 @@
+ENV = "development"
+DEBUG = True
+SECRET_KEY = "YOUR_SECRET_KEY"
+AES_KEY = "YOUR_AES_KEY"
+
+SQL_Server = "YOUR_SQL_SERVER"
+
+MQTT_IP = "MQTT_IP"
+MQTT_PORT = 1883
